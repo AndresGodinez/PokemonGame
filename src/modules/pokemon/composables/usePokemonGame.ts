@@ -23,7 +23,7 @@ export const usePokemonGame = () => {
     });
     return pokemonsArray.sort(() => Math.random() - 0.5);
   };
-  const getNextOptions = (howMany: number = 4) => {
+  const getNextRound = (howMany: number = 4) => {
     gameStatus.value = GameStatus.Playing;
     pokemonOptions.value = pokemons.value.slice(0, howMany);
     pokemons.value = pokemons.value.slice(howMany);
@@ -39,7 +39,7 @@ export const usePokemonGame = () => {
         origin: { y: 0.6 },
       });
       setTimeout(() => {
-        getNextOptions();
+        getNextRound();
       }, 2000);
     } else {
       gameStatus.value = GameStatus.Lost;
@@ -48,7 +48,7 @@ export const usePokemonGame = () => {
   onMounted(async () => {
     // await new Promise((resolve => setTimeout(resolve, 1000)));
     pokemons.value = await getPokemons();
-    getNextOptions();
+    getNextRound();
   });
   return {
     gameStatus,
@@ -56,7 +56,7 @@ export const usePokemonGame = () => {
     pokemonOptions,
     randomPokemon,
     // methods
-    getNextOptions,
+    getNextRound,
     checkAnswer
   };
 };

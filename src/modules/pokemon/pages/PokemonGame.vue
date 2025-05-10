@@ -7,6 +7,9 @@
   <section v-else class="flex flex-col justify-center items-center w-screen h-screen">
     <h1 class="mt-5">Quíen es este pokemon?</h1>
     <h1>{{ randomPokemon }}</h1>
+    <button v-if="gameStatus === GameStatus.Lost" class="bg-blue-500 p-2 rounded text-xl px-4 text-white flex flex-col"
+            @click="()=>getNextRound()">New Game
+    </button>
     <h1>Status {{ gameStatus }}</h1>
     <PokemonPicture :pokemon-id="randomPokemon.id"
                     :show-pokemon="gameStatus !== GameStatus.Playing" />
@@ -14,7 +17,7 @@
     <PokemonOptions :options="options"
                     :block-selections="gameStatus !== GameStatus.Playing"
                     :correct-answer="randomPokemon.id"
-                    @selected-option="checkAnswer"/>
+                    @selected-option="checkAnswer" />
   </section>
 </template>
 
@@ -26,5 +29,12 @@ import { usePokemonGame } from '@/modules/pokemon/composables/usePokemonGame.ts'
 import { GameStatus } from '@/modules/pokemon/interfaces';
 
 
-const { isLoading, randomPokemon, gameStatus, pokemonOptions:options, checkAnswer } = usePokemonGame();
+const {
+  isLoading,
+  randomPokemon,
+  gameStatus,
+  pokemonOptions: options,
+  checkAnswer,
+  getNextRound,
+} = usePokemonGame();
 </script>
