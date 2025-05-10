@@ -10,7 +10,11 @@
     <h1>Status {{ gameStatus }}</h1>
     <PokemonPicture :pokemon-id="randomPokemon.id"
                     :show-pokemon="gameStatus !== GameStatus.Playing" />
-    <PokemonOptions />
+
+    <PokemonOptions :options="options"
+                    :block-selections="gameStatus !== GameStatus.Playing"
+                    :correct-answer="randomPokemon.id"
+                    @selected-option="checkAnswer"/>
   </section>
 </template>
 
@@ -22,5 +26,5 @@ import { usePokemonGame } from '@/modules/pokemon/composables/usePokemonGame.ts'
 import { GameStatus } from '@/modules/pokemon/interfaces';
 
 
-const { isLoading, randomPokemon, gameStatus } = usePokemonGame();
+const { isLoading, randomPokemon, gameStatus, pokemonOptions:options, checkAnswer } = usePokemonGame();
 </script>
