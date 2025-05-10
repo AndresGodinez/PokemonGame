@@ -5,12 +5,20 @@
     <h3 class="animate-pulse">Cargando...</h3>
   </section>
   <section v-else class="flex flex-col justify-center items-center w-screen h-screen">
-    <h1 class="mt-5">Quíen es este pokemon?</h1>
-    <h1>{{ randomPokemon }}</h1>
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold mb-4">Who's that Pokémon?</h1>
+      <div class="flex gap-4 justify-center">
+        <h2 class="bg-green-100 text-green-800 px-4 py-2 rounded-lg">
+          Won: {{ won }}
+        </h2>
+        <h2 class="bg-red-100 text-red-800 px-4 py-2 rounded-lg">
+          Lost: {{ lost }}
+        </h2>
+      </div>
+    </div>
     <button v-if="gameStatus === GameStatus.Lost" class="bg-blue-500 p-2 rounded text-xl px-4 text-white flex flex-col"
-            @click="()=>getNextRound()">New Game
+            @click="getNextRound()">New Game
     </button>
-    <h1>Status {{ gameStatus }}</h1>
     <PokemonPicture :pokemon-id="randomPokemon.id"
                     :show-pokemon="gameStatus !== GameStatus.Playing" />
 
@@ -36,5 +44,7 @@ const {
   pokemonOptions: options,
   checkAnswer,
   getNextRound,
+  won,
+  lost
 } = usePokemonGame();
 </script>

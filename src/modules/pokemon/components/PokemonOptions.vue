@@ -1,6 +1,5 @@
 <template>
   <section class="flex flex-col justify-center items-center  w-screen">
-    <h1>{{ blockSelections }}</h1>
     <button
       v-for="{name, id} in options"
       :key="id"

@@ -6,6 +6,8 @@ import confetti from 'canvas-confetti';
 export const usePokemonGame = () => {
   const gameStatus = ref<GameStatus>(GameStatus.Playing);
   const pokemons = ref<Pokemon[]>([]);
+  const won = ref<number>(0);
+  const lost = ref<number>(0);
   const pokemonOptions = ref<Pokemon[]>([]);
   const isLoading = computed(() => pokemons.value.length === 0);
   const randomPokemon = computed(()=>{
@@ -32,6 +34,7 @@ export const usePokemonGame = () => {
   const checkAnswer = (id: number) => {
     if (gameStatus.value !== GameStatus.Playing) return;
     if (id === randomPokemon.value.id) {
+      won.value++;
       gameStatus.value = GameStatus.Won;
       confetti({
         particleCount: 400,
@@ -40,8 +43,9 @@ export const usePokemonGame = () => {
       });
       setTimeout(() => {
         getNextRound();
-      }, 2000);
+      }, 1000);
     } else {
+      lost.value++;
       gameStatus.value = GameStatus.Lost;
     }
   }
@@ -55,6 +59,8 @@ export const usePokemonGame = () => {
     isLoading,
     pokemonOptions,
     randomPokemon,
+    won,
+    lost,
     // methods
     getNextRound,
     checkAnswer
