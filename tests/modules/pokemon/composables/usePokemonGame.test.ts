@@ -2,6 +2,18 @@ import { usePokemonGame } from '../../../../src/modules/pokemon/composables/useP
 import { withSetup } from '../../../utils/setup-utils.ts';
 import { GameStatus } from '../../../../src/modules/pokemon/interfaces';
 import { flushPromises } from '@vue/test-utils';
+import AxiosMockAdapter from 'axios-mock-adapter';
+
+import { pokemonApi } from '../../../../src/modules/pokemon/api/pokemonApi';
+import { fakePokemonsData } from '../../../mocks/fake-pokemons-data';
+import { expect } from 'vitest';
+
+const mockPokemonApi = new AxiosMockAdapter(pokemonApi);
+
+mockPokemonApi.onGet('/?limit=151').reply(200, {
+  results: fakePokemonsData,
+});
+
 
 describe('usePokemonGame', () => {
   test('should have the correct properties', async () => {
@@ -10,8 +22,6 @@ describe('usePokemonGame', () => {
     expect(result.isLoading.value).toEqual(true);
     expect(result.pokemonOptions.value).toEqual([]);
     expect(result.randomPokemon.value).toBeUndefined();
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     await flushPromises();
 
@@ -24,6 +34,38 @@ describe('usePokemonGame', () => {
       name: expect.any(String),
     });
 
+  });
 
+  test('should get the next round', async () => {
+    const [result, app] = withSetup(usePokemonGame);
+    await flushPromises();
+
+    expect(result.pokemonOptions.value.length).toEqual(4);
+    result.getNextRound(5);
+    expect(result.pokemonOptions.value.length).toEqual(5);
+    expect(result.gameStatus.value).toEqual(GameStatus.Playing);
+  });
+  test('should check the pokemons is different when getNextRound is called', async () => {
+    const [result, app] = withSetup(usePokemonGame);
+    await flushPromises();
+    const firstPokemonOptions = result.pokemonOptions.value;
+    result.getNextRound(4);
+    expect(result.pokemonOptions.value).not.toEqual(firstPokemonOptions);
+  });
+  test('should check the correct answer', async () => {
+    const [result, app] = withSetup(usePokemonGame);
+    await flushPromises();
+    expect(result.gameStatus.value).toEqual(GameStatus.Playing);
+    const correctId = result.randomPokemon.value.id;
+    result.checkAnswer(correctId);
+    expect(result.gameStatus.value).toEqual(GameStatus.Won);
+  });
+  test('should check the incorrect answer', async () => {
+    const [result, app] = withSetup(usePokemonGame);
+    await flushPromises();
+    expect(result.gameStatus.value).toEqual(GameStatus.Playing);
+    const correctId = result.randomPokemon.value.id++;
+    result.checkAnswer(correctId);
+    expect(result.gameStatus.value).toEqual(GameStatus.Lost);
   });
 });
