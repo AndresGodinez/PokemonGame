@@ -29,7 +29,6 @@ export const usePokemonGame = () => {
     gameStatus.value = GameStatus.Playing;
     pokemonOptions.value = pokemons.value.slice(0, howMany);
     pokemons.value = pokemons.value.slice(howMany);
-    console.log({options: pokemonOptions.value});
   };
   const checkAnswer = (id: number) => {
     if (gameStatus.value !== GameStatus.Playing) return;

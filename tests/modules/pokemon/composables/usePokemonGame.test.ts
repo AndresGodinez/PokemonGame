@@ -7,13 +7,21 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { pokemonApi } from '../../../../src/modules/pokemon/api/pokemonApi';
 import { fakePokemonsData } from '../../../mocks/fake-pokemons-data';
 import { expect } from 'vitest';
+import confetti from 'canvas-confetti';
+
 
 const mockPokemonApi = new AxiosMockAdapter(pokemonApi);
 
 mockPokemonApi.onGet('/?limit=151').reply(200, {
   results: fakePokemonsData,
 });
-
+vi.mock('canvas-confetti', () => ({
+  default: vi.fn(() => ({
+    particleCount: 400,
+    spread: 70,
+    origin: { y: 0.6 },
+  })),
+}));
 
 describe('usePokemonGame', () => {
   test('should have the correct properties', async () => {
@@ -27,7 +35,6 @@ describe('usePokemonGame', () => {
 
     expect(result.isLoading.value).toEqual(false);
     expect(result.pokemonOptions.value.length).toEqual(4);
-    console.log(result.randomPokemon.value);
 
     expect(result.randomPokemon.value).toEqual({
       id: expect.any(Number),
@@ -58,6 +65,12 @@ describe('usePokemonGame', () => {
     expect(result.gameStatus.value).toEqual(GameStatus.Playing);
     const correctId = result.randomPokemon.value.id;
     result.checkAnswer(correctId);
+    expect(confetti).toHaveBeenCalled(true);
+    expect(confetti).toBeCalledWith({
+      particleCount: 400,
+      spread: 70,
+      origin: { y: 0.6 },
+    })
     expect(result.gameStatus.value).toEqual(GameStatus.Won);
   });
   test('should check the incorrect answer', async () => {
