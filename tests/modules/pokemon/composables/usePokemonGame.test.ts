@@ -65,7 +65,7 @@ describe('usePokemonGame', () => {
     expect(result.gameStatus.value).toEqual(GameStatus.Playing);
     const correctId = result.randomPokemon.value.id;
     result.checkAnswer(correctId);
-    expect(confetti).toHaveBeenCalled(true);
+    expect(confetti).toHaveBeenCalled();
     expect(confetti).toBeCalledWith({
       particleCount: 400,
       spread: 70,
